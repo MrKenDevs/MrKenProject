@@ -28,7 +28,7 @@ function	script	IsDualWield	{
 
 -	script	DualWieldMastery	-1,{
 	OnNPCKillEvent:
-	callfunc "IsDualWield";
+	callfunc IsDualWield;
 	
 	if (Class == Job_Assassin || Class == Job_Assassin_Cross || Class == Job_Guillotine_Cross)
 	{
