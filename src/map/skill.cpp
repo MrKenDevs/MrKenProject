@@ -3931,6 +3931,9 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		case DK_HACKANDSLASHER_ATK:
 			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, -1, dmg_type);
 			break;
+		case ALL_PIERCE:
+			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, skill_lv, DMG_SINGLE);
+			break;
 		case AG_STORM_CANNON:
 		case AG_CRIMSON_ARROW:
 			dmg.dmotion = clif_skill_damage(dsrc, bl, tick, dmg.amotion, dmg.dmotion, damage, dmg.div_, skill_id, skill_lv, DMG_SPLASH);
@@ -5147,6 +5150,8 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case MER_CRASH:
 	case SM_BASH:
 	case MS_BASH:
+	case ALL_SWING:
+	case ALL_PUMMEL:
 	case MC_MAMMONITE:
 	case TF_DOUBLE:
 	case AC_DOUBLE:
@@ -5423,6 +5428,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		[[fallthrough]];
 #endif
 	case MA_SHARPSHOOTING:
+	case ALL_PIERCE:
 	case NJ_KAMAITACHI:
 	case NPC_DARKPIERCING:
 	case NPC_ACIDBREATH:
@@ -5583,6 +5589,33 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		map_foreachinpath(skill_attack_area, src->m, src->x, src->y, bl->x, bl->y,
 			skill_get_splash(skill_id, skill_lv), skill_get_maxcount(skill_id, skill_lv), splash_target(src),
 			skill_get_type(skill_id), src, src, skill_id, skill_lv, tick, flag, BCT_ENEMY);
+		break;
+	case ALL_LUNGE:
+	{
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+		struct block_list* mbl = bl;
+		uint8 dir = map_calc_dir(src, bl->x, bl->y);
+		short x, y, i = 1; // 1 Cell from Target
+		if (dir > 0 && dir < 4)
+			x = -i;
+		else if (dir > 4)
+			x = i;
+		else
+			x = 0;
+		if (dir > 2 && dir < 6)
+			y = -i;
+		else if (dir == 7 || dir < 2)
+			y = i;
+		else
+			y = 0;
+
+		unit_movepos(src, bl->x + x, bl->y + y, 1, true);
+		if (battle_check_target(src, bl, BCT_ENEMY) > 0 && unit_movepos(src, bl->x + x, bl->y + y, 1, true)) {
+			dir = dir < 4 ? dir + 4 : dir - 4; // change direction [Celest]
+			unit_setdir(bl, dir);
+			clif_blown(src);
+		}
+	}
 		break;
 
 	//Splash attack skills.
@@ -5989,6 +6022,29 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			// For players, damage depends on distance, so add it to flag if it is > 1
 			// Cannot hit hidden targets
 			skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag|SD_ANIMATION|(sd?distance_bl(src, bl):0));
+		}
+		break;
+	case ALL_CLEAVE:
+		if (flag & 1) {
+			if (bl->id == skill_area_temp[1])
+				break;
+			if (skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, SD_ANIMATION))
+				skill_blown(src, bl, skill_area_temp[2], -1, BLOWN_NONE);
+		}
+		else {
+			int x = bl->x, y = bl->y, i, dir;
+			dir = map_calc_dir(bl, src->x, src->y);
+			skill_area_temp[1] = bl->id;
+			skill_area_temp[2] = skill_get_blewcount(skill_id, skill_lv);
+			// all the enemies between the caster and the target are hit, as well as the target
+			if (skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, 0))
+				skill_blown(src, bl, skill_area_temp[2], -1, BLOWN_NONE);
+			for (i = 0; i < 4; i++) {
+				map_foreachincell(skill_area_sub, bl->m, x, y, BL_CHAR,
+					src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 1, skill_castend_damage_id);
+				x += dirx[dir];
+				y += diry[dir];
+			}
 		}
 		break;
 
@@ -7829,6 +7885,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		clif_skill_nodamage(src,*bl,skill_id,skill_lv,sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
 		break;
 
+	case SWM_SHIELDBLOCK:
 	case PR_KYRIE:
 	case MER_KYRIE:
 	case SU_TUNAPARTY:
@@ -8322,6 +8379,25 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		}
 		break;
 
+	case SWM_TAUNT:
+		clif_skill_nodamage(src, *bl, skill_id, skill_lv, i != 0);
+		if (dstmd)
+		{
+			dstmd->state.provoke_flag = src->id;
+			mob_target(dstmd, src, skill_get_range2(src, skill_id, skill_lv, true));
+			break;
+		}
+		if (status_has_mode(tstatus, MD_STATUSIMMUNE))
+		{
+			i = sc_start(src, bl, type, skill_id, 25 + 5 * skill_lv, skill_get_time(skill_id, skill_lv));
+			break;
+		}
+		else
+		{
+			i = sc_start(src, bl, type, skill_id, 50 + 5 * skill_lv, skill_get_time(skill_id, skill_lv));
+			break;
+		}
+		break;
 	case SM_PROVOKE:
 	case SM_SELFPROVOKE:
 	case MER_PROVOKE:
@@ -8765,6 +8841,13 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 0,
 			skill_castend_damage_id);
 		break;
+	case ALL_CLEAVE:
+	{
+		skill_area_temp[1] = bl->id;
+		map_foreachindir(skill_area_sub, src->m, src->x, src->y, bl->x, bl->y, skill_get_splash(skill_id, skill_lv), skill_get_maxcount(skill_id, skill_lv) + 2, 0,
+			splash_target(src), src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 0, skill_castend_damage_id);
+	}
+	break;
 #else
 	case KN_BRANDISHSPEAR:
 #endif
@@ -9732,6 +9815,23 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			if(sp < 0) sp = 0;
 			status_zap(src, 0, sp);
 		}
+		break;
+	case ALL_PUMMEL:
+	{
+		int hp = 0;
+		unit_skillcastcancel(bl, 0);
+		status_heal(src, status_get_max_hp(src) / 50, 0, 2);
+		if ((dstmd) && hp && hp < tstatus->hp)
+		{
+			clif_skill_nodamage(src, *bl, skill_id, skill_lv);
+			status_zap(bl, tstatus->hp - 1, 0, 0);
+			break;
+		}
+		struct unit_data* ud = unit_bl2ud(bl);
+		if (!ud || ud->skilltimer == INVALID_TIMER)
+			break; // Check if there is something to cancel
+		break;
+	}
 		break;
 	case SA_SPELLBREAKER:
 		{
@@ -14104,6 +14204,12 @@ int skill_castend_pos2(struct block_list* src, int x, int y, uint16 skill_id, ui
 		if( map_getcell(src->m,x,y,CELL_CHKREACH) && skill_check_unit_movepos(5, src, x, y, 1, 0) ) //You don't move on GVG grounds.
 			clif_blown(src);
 		status_change_end(src, SC_HIDING);
+		break;
+	case ALL_LUNGE:
+		if (unit_movepos(src, x, y, 2, 1))
+		{
+			clif_snap(src, src->x, src->y);
+		}
 		break;
 	case AM_SPHEREMINE:
 	case AM_CANNIBALIZE:

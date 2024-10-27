@@ -1202,6 +1202,18 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 			status_change_end(target, SC_KYRIE);
 	}
 
+	if ((sce = sc->getSCE(SC_SHIELDBLOCK)) && damage > 0)
+	{
+		if (flag & BF_WEAPON || flag & BF_SHORT)
+		{
+			damage = 0;
+		}
+		else
+			return damage;
+		if (sce->val2 <= 0)
+			status_change_end(src, SC_SHIELDBLOCK);
+	}
+
 	int element;
 	if (flag & BF_WEAPON) {
 		status_data* sstatus = status_get_status_data(*src);
@@ -4596,6 +4608,21 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 	}
 
 	switch(skill_id) {
+	case ALL_CLEAVE:
+		skillratio += 100 * skill_lv; // Midnight Legends Customs
+		break;
+	case ALL_SWING:
+		skillratio += 50 * skill_lv; // Midnight Legends Customs
+		break;
+	case ALL_LUNGE:
+		skillratio += 25 * skill_lv; // Midnight Legends Customs
+		break;
+	case ALL_PIERCE:
+		skillratio += 20 * skill_lv; // Midnight Legends Customs
+		break;
+	case ALL_PUMMEL:
+		skillratio += 10 * skill_lv; // Midnight Legends Customs
+		break;
 		case SM_BASH:
 		case MS_BASH:
 			skillratio += 30 * skill_lv;

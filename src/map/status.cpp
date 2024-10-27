@@ -10293,6 +10293,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			if((!undead_flag && status->race!=RC_DEMON) || bl->type == BL_PC)
 				return 0;
 			break;
+		case SC_SHIELDBLOCK:
 		case SC_KYRIE:
 		case SC_TUNAPARTY:
 			if (bl->type == BL_MOB)
@@ -10868,6 +10869,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			break;
 		case SC_MAGICROD:
 			val2 = val1*20; // SP gained
+			break;
+		case SC_SHIELDBLOCK:
+			val2 = val1 + 1;
 			break;
 		case SC_KYRIE:
 			if( val4 ) { // Formulas for Praefatio

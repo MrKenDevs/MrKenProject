@@ -1,0 +1,80 @@
+/// ======================= ///
+/// MrKen's Passive Skills  ///
+/// ======================= ///
+
+function	script	IsDualWield	{
+	if (getiteminfo(getequipid(EQI_HAND_L), ITEMINFO_VIEW) != W_SHIELD)
+	{
+		return 1;
+	}
+	return 0;
+	end;
+}
+
+-	script	DaggerMastery	-1,{
+	OnNPCKillEvent:
+	
+	if (getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_DAGGER)
+	{
+		skill 1020,1,3;
+		end;
+	}
+	if (!getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_DAGGER)
+	{
+	return;
+	}
+	end;
+}	
+
+-	script	DualWieldMastery	-1,{
+	OnNPCKillEvent:
+	callfunc "IsDualWield";
+	
+	if (Class == Job_Assassin || Class == Job_Assassin_Cross || Class == Job_Guillotine_Cross)
+	{
+		skill 1023,1,3;
+		end;
+	}
+		
+	else if (Class != Job_Assassin || Class != Job_Assassin_Cross || Class != job_3rd_gc)
+	{
+		return;
+	}
+end;
+}	
+
+-	script	SwordMastery	-1,{
+	OnNPCKillEvent:
+	
+	if (getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_1HSWORD)
+	{
+		skill 1021,1,3;
+		end;
+	}
+	if (!getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_1HSWORD)
+	{
+		return;
+	}
+	end;
+}
+
+-	script	TwoHandMastery	-1,{
+		OnNPCKillEvent:
+		
+	if (getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_2HSWORD)
+	{
+		skill 1022,1,3;
+		end;
+	}
+	if (!getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_2HSWORD)
+	{
+		return;
+	}
+end;
+}
+
+
+
+
+
+

@@ -1532,6 +1532,33 @@ enum e_skill {
 	SA_ELEMENTFIRE,
 	SA_ELEMENTWIND,
 
+	// Midnight Legends Customs
+	// Passive Skills
+
+	PS_DAGGER = 1020,
+	PS_SWORD,
+	PS_TH,
+	PS_DW,
+	PS_MATKNOW,
+	PS_ELEKNOW,
+	PS_LIGHTARMOR,
+	PS_MEDIUMARMOR,
+	PS_HEAVYARMOR,
+	PS_SHIELD,
+
+	// Generalized Skills
+	ALL_CLEAVE,
+	ALL_SWING,
+	ALL_LUNGE,
+	ALL_PUMMEL,
+	ALL_PIERCE,
+
+	//Midnight Legends Swordman
+	SWM_TAUNT,
+	SWM_SHIELDBLOCK,
+
+	//Midnight Legends Thief
+
 	RK_ENCHANTBLADE = 2001,
 	RK_SONICWAVE,
 	RK_DEATHBOUND,
