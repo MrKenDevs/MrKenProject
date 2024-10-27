@@ -5147,11 +5147,14 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	map_freeblock_lock();
 
 	switch(skill_id) {
+	case ALL_PUMMEL:
+		clif_specialeffect(bl, EF_SILENCEATTACK, AREA);
+		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
+		break;
+	case ALL_SWING:
 	case MER_CRASH:
 	case SM_BASH:
 	case MS_BASH:
-	case ALL_SWING:
-	case ALL_PUMMEL:
 	case MC_MAMMONITE:
 	case TF_DOUBLE:
 	case AC_DOUBLE:
@@ -5591,6 +5594,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 			skill_get_type(skill_id), src, src, skill_id, skill_lv, tick, flag, BCT_ENEMY);
 		break;
 	case ALL_LUNGE:
+		clif_specialeffect(bl, SM_BASH, AREA);
 	{
 		skill_attack(BF_WEAPON, src, src, bl, skill_id, skill_lv, tick, flag);
 		struct block_list* mbl = bl;
@@ -6025,6 +6029,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		}
 		break;
 	case ALL_CLEAVE:
+		clif_specialeffect(bl, EF_MAGNUMBREAK, AREA);
 		if (flag & 1) {
 			if (bl->id == skill_area_temp[1])
 				break;
@@ -8384,6 +8389,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 
 	case SWM_TAUNT:
+		clif_specialeffect(bl, EF_PROVOKE, AREA);
 		clif_skill_nodamage(src, *bl, skill_id, skill_lv, i != 0);
 		if (dstmd)
 		{

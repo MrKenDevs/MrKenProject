@@ -10874,6 +10874,12 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = val1*20; // SP gained
 			break;
 		case SC_SHIELDBLOCK:
+			if (val4)
+			{ 
+				val2 = (status->max_hp * (val1 * 5) / 100); //%Max HP to absorb
+				val3 = val1 + 1; //Hits
+			}
+			break;
 		case SC_KYRIE:
 			if( val4 ) { // Formulas for Praefatio
 				val2 = (status->max_hp * (val1 * 2 + 10) / 100) + val4 * 2; //%Max HP to absorb
