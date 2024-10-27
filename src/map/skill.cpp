@@ -7886,6 +7886,10 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		break;
 
 	case SWM_SHIELDBLOCK:
+		clif_specialeffect(src, 336, AREA);
+		clif_skill_nodamage(bl, *bl, skill_id, skill_lv);
+		sc_start(src, src, SC_SHIELDBLOCK, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+		break;
 	case PR_KYRIE:
 	case MER_KYRIE:
 	case SU_TUNAPARTY:

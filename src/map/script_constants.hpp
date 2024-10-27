@@ -2782,6 +2782,7 @@
 	export_deprecated_constant2("SI_CHEERUP",992);
 	export_deprecated_constant2("SI_S_MANAPOTION",995);
 	export_deprecated_constant2("SI_M_DEFSCROLL",996);
+	export_deprecated_constant2("SI_SHIELDBLOCK",1500);
 
 /// Do not modify code below this, until the end of the API hook, since it will be automatically generated again
 /// @APIHOOK_START(EFST_CONST)

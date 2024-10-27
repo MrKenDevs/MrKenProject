@@ -1202,7 +1202,8 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 			status_change_end(target, SC_KYRIE);
 	}
 
-	if ((sce = sc->getSCE(SC_SHIELDBLOCK)) && damage > 0) {
+	if ((sce = sc->getSCE(SC_SHIELDBLOCK)) && damage > 0)
+	{
 		sce->val2 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
 		if (flag & BF_WEAPON) {
 			if (sce->val2 >= 0)

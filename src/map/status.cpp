@@ -10294,6 +10294,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				return 0;
 			break;
 		case SC_SHIELDBLOCK:
+			if (bl->type == BL_MOB)
+				return 0;
+			break;
 		case SC_KYRIE:
 		case SC_TUNAPARTY:
 			if (bl->type == BL_MOB)
@@ -10871,8 +10874,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = val1*20; // SP gained
 			break;
 		case SC_SHIELDBLOCK:
-			val2 = (val1 + 1); // Hits blocked is equal to skill_lv + 1
-			break;
 		case SC_KYRIE:
 			if( val4 ) { // Formulas for Praefatio
 				val2 = (status->max_hp * (val1 * 2 + 10) / 100) + val4 * 2; //%Max HP to absorb
