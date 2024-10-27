@@ -10871,7 +10871,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = val1*20; // SP gained
 			break;
 		case SC_SHIELDBLOCK:
-			val2 = val1 + 1; // Hits blocked are skill_lv + 1
+			val2 = (val1 + 1); // Hits blocked is equal to skill_lv + 1
 			break;
 		case SC_KYRIE:
 			if( val4 ) { // Formulas for Praefatio

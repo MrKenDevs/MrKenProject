@@ -1002,6 +1002,7 @@
 	export_constant(SC_ASPERSIO);
 	export_constant(SC_BENEDICTIO);
 	export_constant(SC_KYRIE);
+	export_constant(SC_SHIELDBLOCK);
 	export_constant(SC_MAGNIFICAT);
 	export_constant(SC_GLORIA);
 	export_constant(SC_AETERNA);
@@ -2805,6 +2806,7 @@
 	export_constant(EFST_ASPERSIO);
 	export_constant(EFST_BENEDICTIO);
 	export_constant(EFST_KYRIE);
+	export_constant(EFST_SHIELDBLOCK);
 	export_constant(EFST_MAGNIFICAT);
 	export_constant(EFST_GLORIA);
 	export_constant(EFST_LEXAETERNA);
@@ -9446,6 +9448,7 @@
 	export_constant(EF_GASPUSH);
 	export_constant(EF_SPRINGTRAP);
 	export_constant(EF_KYRIE);
+	export_constant(EF_SHIELDBLOCK);
 	export_constant(EF_MAGNUS);
 	export_constant(EF_BOTTOM);
 	export_constant(EF_BLITZBEAT);

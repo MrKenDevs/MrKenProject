@@ -1202,16 +1202,16 @@ bool battle_status_block_damage(struct block_list *src, struct block_list *targe
 			status_change_end(target, SC_KYRIE);
 	}
 
-	if ((sce = sc->getSCE(SC_SHIELDBLOCK)) && damage > 0)
-	{
-		if (flag & BF_WEAPON || flag & BF_SHORT)
-		{
-			damage = 0;
+	if ((sce = sc->getSCE(SC_SHIELDBLOCK)) && damage > 0) {
+		sce->val2 -= static_cast<int>(cap_value(damage, INT_MIN, INT_MAX));
+		if (flag & BF_WEAPON) {
+			if (sce->val2 >= 0)
+				damage = 0;
+			else
+				damage = -sce->val2;
 		}
-		else
-			return damage;
-		if (sce->val2 <= 0)
-			status_change_end(src, SC_SHIELDBLOCK);
+		if ((--sce->val3) <= 0 || (sce->val2 <= 0) || skill_id == AL_HOLYLIGHT)
+			status_change_end(target, SC_SHIELDBLOCK);
 	}
 
 	int element;

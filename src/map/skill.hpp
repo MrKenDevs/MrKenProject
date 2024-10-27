@@ -1555,7 +1555,7 @@ enum e_skill {
 
 	//Midnight Legends Swordman
 	SWM_TAUNT,
-	SWM_SHIELD_BLOCK,
+	SWM_SHIELDBLOCK,
 
 	//Midnight Legends Thief
 

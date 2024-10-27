@@ -1898,6 +1898,7 @@ enum e_special_effects {
 	EF_SOUL_REAPER,
 
 	EF_SOUL_EXPLOSION = 1242,
+	EF_SHIELDBLOCK,
 	EF_MAX
 };
 
