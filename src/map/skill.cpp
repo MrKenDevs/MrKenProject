@@ -1451,6 +1451,49 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl, uint
 		unit_set_walkdelay(bl, tick, skill_get_time2(skill_id, skill_lv), 1);
 		break;
 
+	case MAG_FIREBOLT:
+		if (sd)
+			sc_start(src, bl, SC_BURNING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			if (tsc && tsc->getSCE(SC_FREEZING))
+			{
+				status_change_end(bl, SC_FREEZING, INVALID_TIMER);
+				sc_start(src, bl, SC_BURNING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			}
+			if (tsc && tsc->getSCE(SC_ANKLE))
+			{
+				status_change_end(bl, SC_ANKLE, INVALID_TIMER);
+				sc_start(src, bl, SC_BURNING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			}
+		break;
+	case MAG_LIGHTBOLT:
+		if (sd)
+			sc_start(src, bl, SC_ANKLE, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			if (tsc && tsc->getSCE(SC_FREEZING))
+			{
+				status_change_end(bl, SC_FREEZING, INVALID_TIMER);
+				sc_start(src, bl, SC_ANKLE, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			}
+			if (tsc && tsc->getSCE(SC_BURNING))
+			{
+				status_change_end(bl, SC_BURNING, INVALID_TIMER);
+				sc_start(src, bl, SC_ANKLE, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			}
+		break;
+	case MAG_ICEBOLT:
+		if (sd)
+			sc_start(src, bl, SC_FREEZING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			if (tsc && tsc->getSCE(SC_BURNING))
+			{
+				status_change_end(bl, SC_BURNING, INVALID_TIMER);
+				sc_start(src, bl, SC_FREEZING, 1000, skill_lv, skill_get_time(skill_id, skill_lv));
+			}
+			if (tsc && tsc->getSCE(SC_ANKLE))
+			{
+				status_change_end(bl, SC_ANKLE, INVALID_TIMER);
+				sc_start(src, bl, SC_FREEZING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
+			}
+		break;
+
 	case MG_FROSTDIVER:
 		if(!sc_start(src,bl,SC_FREEZE,min(skill_lv*3+35,skill_lv+60),skill_lv,skill_get_time2(skill_id,skill_lv)) && sd)
 			clif_skill_fail( *sd, skill_id );

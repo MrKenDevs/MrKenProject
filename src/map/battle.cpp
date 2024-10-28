@@ -7993,68 +7993,45 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio -= 50;
 						break;
 					case MAG_FIREBOLT:
-						clif_specialeffect(src, EF_BEGINSPELL3, AREA);
 						clif_specialeffect(target, EF_FIREHIT, AREA);
 						skillratio += 15 * skill_lv;
 						if (sd)
-							sc_start(src, target, SC_BURNING, 25 * skill_lv, skill_lv, 5000, 500);
-						if (tsc && tsc->getSCE(SC_BURNING))
-						{
-							skillratio += 30 * skill_lv;
-							status_change_end(target, SC_BURNING, INVALID_TIMER);
-							sc_start(src, target, SC_BURNING, 100, skill_lv, 10000, 500);
-						}
-						if (tsc && (tsc->getSCE(SC_SLOWDOWN) || tsc->getSCE(SC_ANKLE)))
-						{
-							skillratio += 45 * skill_lv;
-							status_change_end(target, SC_SLOWDOWN, INVALID_TIMER);
-							status_change_end(target, SC_ANKLE, INVALID_TIMER);
-
-						}
+							if (tsc && tsc->getSCE(SC_ANKLE))
+							{
+								skillratio += 30 * skill_lv;
+							}
+							if (tsc && tsc->getSCE(SC_FREEZING))
+							{
+								skillratio += 45 * skill_lv;
+							}
 						break;
 					case MAG_ICEBOLT:
-						clif_specialeffect(src, EF_BEGINSPELL2, AREA);
-						clif_specialeffect(target, EF_COLDTHROW, AREA);
+						clif_specialeffect(src, EF_FROSTDIVER, AREA);
 						skillratio += 15 * skill_lv;
 						if (sd)
 						{
-							sc_start(src, target, SC_SLOWDOWN, 25 * skill_lv, skill_lv, 5000, 0);
 							if (tsc && tsc->getSCE(SC_BURNING))
 							{
-								skillratio += 15 * skill_lv;
-								status_change_end(target, SC_BURNING, INVALID_TIMER);
-								sc_start(src, target, SC_SLOWDOWN, 100, skill_lv, 2500, 0);
-							}
-							if (tsc && tsc->getSCE(SC_SLOWDOWN))
-							{
-								skillratio += 15 * skill_lv;
-								status_change_end(target, SC_SLOWDOWN, INVALID_TIMER);
-								sc_start(src, target, SC_ANKLE, 100, skill_lv, 5000, 0);
+								skillratio += 30 * skill_lv;
 							}
 							if (tsc && tsc->getSCE(SC_ANKLE))
 							{
 								skillratio += 45 * skill_lv;
-								status_change_end(target, SC_ANKLE, INVALID_TIMER);
 							}
 						}
 						break;
 					case MAG_LIGHTBOLT:
-						clif_specialeffect(src, EF_BEGINSPELL4, AREA);
 						clif_specialeffect(target, EF_THUNDERSTORM2, AREA);
-						skillratio += 30 * skill_lv;
+						skillratio += 15 * skill_lv;
 						if (sd)
 						{
+							if (tsc && tsc->getSCE(SC_FREEZING))
+							{
+								skillratio += 30 * skill_lv;
+							}
 							if (tsc && tsc->getSCE(SC_BURNING))
 							{
-								skillratio += 15 * skill_lv;
-								status_change_end(target, SC_BURNING, INVALID_TIMER);
-								sc_start(src, target, SC_ANKLE, 100, skill_lv, 2500, 0);
-							}
-							if (tsc && (tsc->getSCE(SC_SLOWDOWN) || tsc->getSCE(SC_ANKLE)))
-							{
 								skillratio += 45 * skill_lv;
-								status_change_end(target, SC_SLOWDOWN, INVALID_TIMER);
-								status_change_end(target, SC_ANKLE, INVALID_TIMER);
 							}
 						}
 						break;
