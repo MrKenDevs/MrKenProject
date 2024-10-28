@@ -6211,6 +6211,12 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case MG_COLDBOLT:
 	case MG_FIREBOLT:
 	case MG_LIGHTNINGBOLT:
+	case MAG_FIREBOLT:
+	case MAG_LIGHTBOLT:
+	case MAG_ICEBOLT:
+	case MAG_FIREBALL:
+	case MAG_SPECTRALARROW:
+	case MAG_ICENOVA:
 	case WZ_EARTHSPIKE:
 	case AL_HEAL:
 	case NPC_DARKTHUNDER:
