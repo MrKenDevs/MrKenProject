@@ -7992,8 +7992,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 					case MG_FIREWALL:
 						skillratio -= 50;
 						break;
-					case MAG_FIREBOLT:
-						clif_specialeffect(target, EF_FIREHIT, AREA);
+					case MG_FIREBOLT:
 						skillratio += 15 * skill_lv;
 						if (sd)
 							if (tsc && tsc->getSCE(SC_ANKLE))
@@ -8005,8 +8004,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 								skillratio += 45 * skill_lv;
 							}
 						break;
-					case MAG_ICEBOLT:
-						clif_specialeffect(src, EF_FROSTDIVER, AREA);
+					case MG_COLDBOLT:
 						skillratio += 15 * skill_lv;
 						if (sd)
 						{
@@ -8035,8 +8033,8 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 							}
 						}
 						break;
-					case MG_FIREBOLT:
-					case MG_COLDBOLT:
+					//case MG_FIREBOLT:
+					//case MG_COLDBOLT:
 					case MG_LIGHTNINGBOLT:
 						if (sc) {
 							if ((skill_id == MG_FIREBOLT && sc->getSCE(SC_FLAMETECHNIC_OPTION)) ||

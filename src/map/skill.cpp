@@ -1451,7 +1451,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl, uint
 		unit_set_walkdelay(bl, tick, skill_get_time2(skill_id, skill_lv), 1);
 		break;
 
-	case MAG_FIREBOLT:
+	case MG_FIREBOLT:
 		if (sd)
 			sc_start(src, bl, SC_BURNING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 			if (tsc && tsc->getSCE(SC_FREEZING))
@@ -1479,7 +1479,7 @@ int skill_additional_effect( struct block_list* src, struct block_list *bl, uint
 				sc_start(src, bl, SC_ANKLE, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 			}
 		break;
-	case MAG_ICEBOLT:
+	case MG_COLDBOLT:
 		if (sd)
 			sc_start(src, bl, SC_FREEZING, 100, skill_lv, skill_get_time(skill_id, skill_lv));
 			if (tsc && tsc->getSCE(SC_BURNING))

@@ -1,0 +1,120 @@
+/// ======================= ///
+/// MrKen's Passive Skills  ///
+/// ======================= ///
+
+function	script	IsDualWield	{
+	switch(getiteminfo(getequipid(EQI_HAND_L), ITEMINFO_VIEW))
+	{
+		case 24:
+		return 0;
+	}
+	end;
+}
+
+function	script	DaggerLevel	{
+	if(PS_DAGGER >=1)	bonus bDoubleAddRate,2+PS_DAGGER/2;
+	if(PS_DAGGER >=3)	bonus bAspdRate,1+PS_DAGGER;
+	if(PS_DAGGER >=5)	bonus bHit,2+PS_DAGGER/3;
+	if(PS_DAGGER >=7)	bonus bFlee,PS_DAGGER/2;
+	if(PS_DAGGER >=9)	bonus bSpeedAddRate,2+PS_DAGGER/4;
+	if(PS_DAGGER >=10)	bonus2 bHPDrainRate,2+PS_DAGGER,2+PS_DAGGER/2;
+	bonus bAgi,PS_DAGGER/2;
+	return;
+}
+
+-	script	DaggerMastery	-1,{
+	OnNPCKillEvent:
+	
+	if(getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_DAGGER)
+	{
+		skill 1020,1,3;
+		end;
+	}
+	if(!getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_DAGGER)
+	{
+	return;
+	}
+	end;
+}	
+
+payon,1,1,1,	script	PlayerStat	-1,{
+end;
+OnWeaponInfo:
+	set .@Mastery$,.@atcmd_parameters$[0];
+	if((.@Mastery$ == "")){
+	getskilllv(1020);
+	}
+	if(.@Mastery$ == "PS_DAGGER") set .@lv,1;
+	set .@lv,atoi(.@atcmd_parameters$[1]);
+	if(!.@lv) set .@lv,getd(""+.@Mastery$+"PS_DAGGER");
+	switch(.@lv){
+	case 1:
+		dispbottom "Dagger Mastery Lv: "+.@lv+" "+DaggerExp+" / "+((PS_DAGGER*PS_DAGGER*25)+10+PS_DAGGER)+"xp";
+	break;
+	}
+end;
+
+OnWeaponLevel:
+	set .@Mastery$,.@atcmd_parameters$[0];
+	set .@lv,atoi(.@atcmd_parameters$[1]);
+	if((.@Mastery$ != "PS_DAGGER") || !.@lv){
+		dispbottom "@wlvl <Type> <LvL>";
+		dispbottom "Dagger Mastery";
+		end;
+	}
+	if(getvariableofnpc(.MaxMastery,"NPCKILL") >= .@lv){
+		if(.@Mastery$ == "Dagger"){
+			setarray .@Mast$[0],"PS_DAGGER";
+			set .@lv,0;
+			while(.@lv < 1){
+				setd ""+.@Mast$[.@lv]+"PS_DAGGER",.@lv;
+				setd ""+.@Mast$[.@lv]+"Experience",0;
+				dispbottom ""+.@Mast$[.@lv]+"Mastery has Advanced to Level "+.@lv+"!";
+				set .@lv,.@lv+1;
+				}
+			}else{
+				setd ""+.@Mast$[.@lv]+"PS_DAGGER",.@lv;
+				setd ""+.@Mast$[.@lv]+"Experience",0;
+				dispbottom ""+.@Mast$[.@lv]+"Mastery has Advanced to Level "+.@lv+"!";
+			}
+		}else{
+			dispbottom "Unfortunately, your "+.@Mastery$+" has reached the maximum level!";
+		}
+end;
+
+OnPlayerStatEvent:
+		switch(getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW)){
+		case 1:
+		DaggerLevel;	break;
+		}
+end;
+
+OnNPCKillEvent:
+	if(.Leveling){
+			set .@Mastery$,"";
+			switch(getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW)){
+			case 1:
+			set .@Mastery$,"Dagger";	break;
+			}
+	if(.MaxMastery > getd(""+ .@Mastery$ + "Dagger")){
+		setd ""+.@Mastery$+"Experience",getd(""+.@Mastery$+"Experience")+(strmobinfo(3,killedrid)+.wLvBonus*getiteminfo(getequipid(EQI_HAND_R),13))*(getbattleflag("base_exp_rate")+(getbattleflag("job_exp_rate")));
+		if(getd(""+.@Mastery$+"Experience") > getd(""+.@Mastery$+"Dagger")*(getd(""+.@Mastery$+"Dagger")*.expcurve)+10+getd(""+.@Mastery$+"Dagger")){
+		setd ""+.@Mastery$+"Dagger",getd(""+.@Mastery$+"Dagger")+1;
+		announce ""+.@Mastery$+" Mastery have progressed to the next level! The new level is "+getd(""+.@Mastery$+"Dagger")+"!",bc_blue|bc_self;
+		setd ""+.@Mastery$+"Experience",0;
+		}
+	}
+}
+end;
+OnInit:
+	bindatcmd("wi"	,"PlayerStat::OnWeaponInfo",1,99);
+	bindatcmd("weaponinfo"	,"PlayerStat::OnWeaponInfo",1,99);
+	bindatcmd("wlvlup"	,"PlayerStat::OnWeaponLevel",60,99);
+	bindatcmd("wlvl"	,"PlayerStat::OnWeaponLevel",60,99);
+	set .Leveling,1;	//Enable or Disable Leveling, 1 = on - 0 = off
+	set .expcurve,500;	//Exp Curve for Masteries - Formula is : Lv*Lv*.expcurve+10+Lv
+	set .MaxMastery,10;	//Maximum level for the Masteries
+	set .wLvBonus,2;	//Amount of Extra EXP from Higher level weapons
+
+end;
+}
